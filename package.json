@@ -1,0 +1,25 @@
+{
+  "name": "create-your-store",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon backend/server.js",
+    "build": "npm install && npm install --prefix frontend/my-react-app && npm run build --prefix frontend/my-react-app",
+    "start": "NODE_ENV=production node backend/server.js"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.9.5",
+    "vite": "^6.0.11"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
