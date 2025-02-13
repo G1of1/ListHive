@@ -1,4 +1,4 @@
-Product Store Application
+Product Store Web Application
 
 
 This is a simple product store I built. This project is a full stack project. This personal project was beneficial in learning in learning MongoDB, Express and Node.js. This project also helped me understand more about creating APIs and backend development as a whole. 
