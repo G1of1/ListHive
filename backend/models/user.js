@@ -13,7 +13,15 @@ const userSchema = new mongoose.Schema({
         type: String, 
         required: true,
     },
-    product: [{
+    fullName: {
+        type: String,
+        required: true
+    },
+    profilePic: {
+        type: String,
+        default: ""
+    },
+    products: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
         deafult: []

@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 // Creating the schema for products(docs in the collection).
 const productSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -11,7 +16,6 @@ const productSchema = new mongoose.Schema({
     },
     overview: {
         type: String,
-        required: true
     },
     image: {
         type: String, 

@@ -1,38 +1,23 @@
-import { Box, Button, Container, Heading, Input, useColorModeValue, VStack, useToast } from "@chakra-ui/react";
+import { Box, Button, Container, Heading, Input, useColorModeValue, VStack, useToast, Textarea } from "@chakra-ui/react";
 import React, { useState } from 'react';
-import { useProductStore } from "../store/product";
-
+import useCreateProduct from "../hooks/useCreateProduct";
+import LoadingSpinner from '../components/skeleton/LoadingSpinner'
+import Product from "../../../../backend/models/product";
 const CreatePage = () => {
 	//Variable for new products using useState()
 	const [ newProduct , setNewProduct ] = useState({
     name: "",
     price : "",
-    image : ""
+    image : "",
+	overview: ""
  });
- //Toast for the notifications
- const toast = useToast();
- //Function from the product.js to create product
- const { createProduct } = useProductStore();
+ 
+ const {createProduct, isCreating } = useCreateProduct();
  const addProduct = async () => {
-	const { success, message } = await createProduct(newProduct);
-	if (!success) {
-		toast({
-			title: "Error",
-			description: message,
-			status: "error",
-			duration: 5000,
-			isClosable: true,
-		});
-	} else {
-		toast({
-			title: "Success",
-			description: message,
-			status: "success",
-			duration: 5000,
-			isClosable: true,
-		});
+	const data = createProduct({product: newProduct});
+	 if(!data.error) {
+	setNewProduct({name: "", price: "", image: "", overview: ""});
 	}
-	setNewProduct({name: "", price: "", image: ""});
  };
 
   return (
@@ -57,11 +42,13 @@ const CreatePage = () => {
 							value={newProduct.price}
 							onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
 						/>
-						<Input
-							placeholder="Overview"
+						<Textarea
+							placeholder="Overview(be sure to include contact information)"
 							name = "overview"
 							value = {newProduct.overview}
 							onChange = {(e) => setNewProduct({...newProduct, overview: e.target.value})}
+							size='5xl'
+							rounded='md'
 						/>
 						<Input
 							placeholder='Image URL'
@@ -69,8 +56,8 @@ const CreatePage = () => {
 							value={newProduct.image}
 							onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
 						/>
-						<Button bgGradient={"linear(to-r, orange.400, red.500)"} onClick={addProduct} w='full'>
-							Add Product
+						<Button bgGradient={"linear(to-r, orange.400, red.500)"} onClick={(e) => {e.preventDefault(); addProduct()}} w='full'>
+							{isCreating ? <LoadingSpinner /> : "Add Product" }
 						</Button>
 					</VStack>
 				</Box>

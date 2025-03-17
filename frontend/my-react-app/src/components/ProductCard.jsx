@@ -1,4 +1,4 @@
-import { Box, Heading, VStack, HStack, IconButton, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, ModalFooter } from '@chakra-ui/react'
+import { Box, Heading, VStack, HStack, IconButton, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, ModalFooter, useColorModeValue } from '@chakra-ui/react'
 import React from 'react'
 import { useState } from 'react';
 import { Button, Input } from '@chakra-ui/react';
@@ -6,80 +6,59 @@ import { useDisclosure } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import { useProductStore } from '../store/product';
 import { useToast } from '@chakra-ui/react';
+import useUpdateProduct from '../hooks/useUpdateProduct';
+import useDeleteProduct from '../hooks/useDeleteProduct';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 
  const ProductCard = ({product}) => {
-  const { deleteProduct, updateProduct } = useProductStore();
+  const {updateProduct, isUpdating } = useUpdateProduct();
+  const { deleteProduct , isDeleting } = useDeleteProduct();
   const [updatedProduct, setUpdatedProduct] = useState(product);
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {data: authUser } = useQuery({queryKey: ['authUser']});
+  const { isOpen: editIsOpen, onOpen: editOnOpen, onClose: editOnClose } = useDisclosure();
+  const { isOpen: deleteIsOpen, onOpen: deleteOnOpen, onClose: deleteOnClose } = useDisclosure();
   const handleDeleteProduct = async (id) => {
-  const { success, message } = await deleteProduct(id);
-  if (!success) {
-    toast({
-      title: "Error",
-      description: message,
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
-  } else {
-    toast({
-      title: "Success",
-      description: message,
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-  }
+      deleteProduct(id);
 };
-const handleUpdateProduct = async (id, updatedProduct) => {
-  const { success, message } = await updateProduct(id, updatedProduct);
-  if (!success) {
-    toast({
-      title: "Error",
-      description: message,
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
-  } else {
-    toast({
-      title: "Success",
-      description: message,
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
+  const handleUpdateProduct = async (id, updatedProduct) => {
+    updateProduct({productID: id, updatedProduct});
     onClose();
-  }
 };
+  const textColor = useColorModeValue("gray.600", "gray.200");
+  const bg = useColorModeValue("white", "gray.800");
 
   return (
+    <>
     <Box
     shadow='lg'
     rounded='lg'
     overflow='hidden'
-    transition="all 0.3s"
-    _hover={{ transform: "translateY(-5px)", shadow: "xl"}}
+    transition='all 0.3s'
+    _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
+    bg={bg}
     >
       <Image src={product.image} alt={product.name} h={48} w='full' objectFit='cover' />
       <Box p={4}>
+      <Link to={`/product/${product._id}`}>
       <Heading as= 'h3' size='md' mb={2}>
         {product.name}
       </Heading>
-      <Text fontWeight="bold" fontSize='l' color={"orange.400"} mb={4}>
+      </Link>
+      <Text fontWeight="bold" fontSize='xl' color={"orange.400"} mb={4}>
         ${product.price.toFixed(2)}
       </Text>
-      <Text fontWeight="semibold" fontSize='md' mb={4}>
-        {product.overview}
+      <Text fontWeight="extrabold" fontSize='xl' mb={4}>
+        By: {product.user.username}
       </Text>
       <HStack spacing={2}>
-        <IconButton icon={<EditIcon />} onClick={onOpen}colorScheme={"orange"}></IconButton>
-        <IconButton icon={<DeleteIcon />} onClick={() => handleDeleteProduct(product._id)} colorScheme={"red"}></IconButton>
-
+        {authUser._id === product.user._id && (<>
+        <IconButton icon={<EditIcon />} onClick={editOnOpen}colorScheme={"orange"}></IconButton>
+        <IconButton icon={<DeleteIcon />} onClick={deleteOnOpen} colorScheme={"red"}></IconButton></>)}
       </HStack>
       </Box>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={editIsOpen} onClose={editOnClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Update Product</ModalHeader>
@@ -114,12 +93,29 @@ const handleUpdateProduct = async (id, updatedProduct) => {
 						</VStack>
           </ModalBody>
           <ModalFooter>
-						<Button colorScheme='orange' mr={3} onClick={() => handleUpdateProduct(product._id, updatedProduct)}>Update</Button>
-						<Button variant='ghost' onClick={onClose}>Cancel</Button>
+						<Button colorScheme='orange' mr={3} onClick={(e) => {e.preventDefault(); handleUpdateProduct(product._id, updatedProduct)}}>Update</Button>
+						<Button variant='ghost' onClick={editOnClose}>Cancel</Button>
+					</ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={deleteIsOpen} onClose={deleteOnClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Are you sure you want to delete this product?</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+          <HStack spacing={4}>
+          
+						</HStack>
+          </ModalBody>
+          <ModalFooter>
+          <IconButton icon={<DeleteIcon />} onClick={(e) => { e.preventDefault(); handleDeleteProduct(product._id)}} colorScheme={"red"}></IconButton>
+						<Button variant='ghost' onClick={deleteOnClose}>Cancel</Button>
 					</ModalFooter>
         </ModalContent>
       </Modal>
     </Box>
+    </>
   )
 }
 export default ProductCard

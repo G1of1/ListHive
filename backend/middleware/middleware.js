@@ -15,7 +15,7 @@ export const middleWare = async (req, res, next) => {
             return res.status(401).json({error: 'Invalid token'})
         }
 
-        const user = await User.findById(decoded.userId).select('-password');
+        const user = await User.findById(decoded.userID).select('-password');
 
         if(!user) {
             return res.status(401).json({error: 'User not found'});
@@ -24,6 +24,6 @@ export const middleWare = async (req, res, next) => {
         next();
     }
     catch(error) {
-        res.status(500).json(error: `Internal Server Error: ${error.message}`);
+        res.status(500).json({error: `Internal Server Error: ${error.message}`});
     }
 }
