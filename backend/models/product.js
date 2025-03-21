@@ -21,6 +21,14 @@ const productSchema = new mongoose.Schema({
         type: String, 
         required: true
     },
+    contactInfo: {
+        number: {
+            type: String
+        },
+        email: {
+            type: String
+        }
+    }
 }, {
     timestamps: true //createdAt, updatedAt timestamps are made
 });

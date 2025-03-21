@@ -10,6 +10,7 @@ import useUpdateProduct from '../hooks/useUpdateProduct';
 import useDeleteProduct from '../hooks/useDeleteProduct';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { formatProductDate } from '../util/date';
 
  const ProductCard = ({product}) => {
   const {updateProduct, isUpdating } = useUpdateProduct();
@@ -27,7 +28,9 @@ import { Link } from 'react-router-dom';
     onClose();
 };
   const textColor = useColorModeValue("gray.600", "gray.200");
-  const bg = useColorModeValue("white", "gray.800");
+  const bg = useColorModeValue("gray.100", "gray.800");
+
+  const productDate = formatProductDate(product.createdAt);
 
   return (
     <>
@@ -52,6 +55,10 @@ import { Link } from 'react-router-dom';
       <Text fontWeight="extrabold" fontSize='xl' mb={4}>
         By: {product.user.username}
       </Text>
+      <Text fontWeight="bold" fontSize='xl' color={"orange.400"} mb={4}>
+        {productDate}
+      </Text>
+      
       <HStack spacing={2}>
         {authUser._id === product.user._id && (<>
         <IconButton icon={<EditIcon />} onClick={editOnOpen}colorScheme={"orange"}></IconButton>

@@ -21,7 +21,7 @@ export const getAllProducts = async (req, res) => {
 
 export const createProduct = async (req, res) => {
     const userID = req.user._id;
-    const { name, price, overview, image} = req.body;
+    const { name, price, overview, image, number, email} = req.body;
     try {
         const user = await User.findById(userID);
 
@@ -36,9 +36,12 @@ export const createProduct = async (req, res) => {
         name: name,
         price: price,
         overview: overview,
-        image: image
+        image: image,
+        contactInfo: {
+            number: number,
+            email: email
+        }
     }); //new product
-    
         await newProduct.save(); //Save new product to the database
         await User.updateOne({_id: userID}, {$push: {products: newProduct._id}}); //Updates the products the user has
         res.status(201).json(newProduct);
@@ -53,7 +56,7 @@ export const updateProduct = async(req, res) => {
     
     try {
         const { id: productID } = req.params;
-        const {name, price, overview, image } = req.body;
+        const {name, price, overview, image, number, email } = req.body;
         const userID = req.user._id;
         if(!mongoose.Types.ObjectId.isValid(productID)) {
             return res.status(400).json({error : `Product ID is invalid`})
@@ -69,6 +72,12 @@ export const updateProduct = async(req, res) => {
         product.name = name || product.name;
         product.overview = overview || product.overview;
         product.image = image || product.image;
+
+        const contactInfo = {
+            number: number,
+            email: email
+        }
+        product.contactInfo = contactInfo;
 
         product = await product.save();
         res.status(200).json(product);
@@ -141,6 +150,23 @@ export const getProduct = async (req, res) => {
             return res.status(400).json({error: "Product not found"});
         }
         res.status(200).json(product);
+    }
+    catch(error) {
+        res.status(500).json({error: `Internal Server Error: ${error.message}`});
+    }
+}
+
+export const getProductContactInfo = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id).populate({
+            path: 'contactInfo',
+        })
+
+        if(!product) {
+            return res.status(400).json({error: "Product not found"})
+        }
+        res.status(200).json(product.contactInfo);
     }
     catch(error) {
         res.status(500).json({error: `Internal Server Error: ${error.message}`});

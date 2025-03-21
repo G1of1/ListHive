@@ -1,6 +1,6 @@
 import express from 'express';
 import { middleWare } from '../middleware/middleware.js';
-import { getAllProducts, createProduct, updateProduct, deleteProduct, getUserProducts, getProduct } from '../controller/products.js';
+import { getAllProducts, createProduct, updateProduct, deleteProduct, getUserProducts, getProduct, getProductContactInfo } from '../controller/products.js';
 //Initialize an the API router.
 const router = express.Router();
 
@@ -11,4 +11,5 @@ router.put('/:id', middleWare, updateProduct); //Updates a specific product from
 router.delete('/:id', middleWare, deleteProduct); //Deletes products from the database.
 router.get('/:id', middleWare, getUserProducts);
 router.get('/product/:id', middleWare, getProduct);
+router.get('/contact/:id', middleWare, getProductContactInfo)
 export default router;
