@@ -13,7 +13,7 @@ export const register = async (req, res) => {
         const passwordLength = password.length;
 
         if(isExistingUser) {
-            return res.status(400).json({error: "User already exists"});
+            return res.status(400).json({error: "Username already taken"});
         }
         if(isExistingEmail) {
             return res.status(400).json({error: "Email already used"});

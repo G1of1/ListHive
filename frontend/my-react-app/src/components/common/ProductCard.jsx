@@ -1,21 +1,22 @@
 import { Box, Heading, VStack, HStack, IconButton, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, ModalFooter, useColorModeValue } from '@chakra-ui/react'
 import React from 'react'
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button, Input } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
-import { useProductStore } from '../store/product';
 import { useToast } from '@chakra-ui/react';
-import useUpdateProduct from '../hooks/useUpdateProduct';
-import useDeleteProduct from '../hooks/useDeleteProduct';
+import useUpdateProduct from '../../hooks/useUpdateProduct';
+import useDeleteProduct from '../../hooks/useDeleteProduct';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { formatProductDate } from '../util/date';
+import { formatProductDate } from '../../util/date';
+import LoadingSpinner from '../skeleton/LoadingSpinner';
 
  const ProductCard = ({product}) => {
   const {updateProduct, isUpdating } = useUpdateProduct();
   const { deleteProduct , isDeleting } = useDeleteProduct();
   const [updatedProduct, setUpdatedProduct] = useState(product);
+  const [img, setImg] = useState(null);
   const toast = useToast();
   const {data: authUser } = useQuery({queryKey: ['authUser']});
   const { isOpen: editIsOpen, onOpen: editOnOpen, onClose: editOnClose } = useDisclosure();
@@ -23,9 +24,26 @@ import { formatProductDate } from '../util/date';
   const handleDeleteProduct = async (id) => {
       deleteProduct(id);
 };
+  const imgRef = useRef(null);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImg(reader.result);
+
+      }
+      reader.readAsDataURL(file);
+      setUpdatedProduct({...updatedProduct, image: img});
+      console.log(updatedProduct.image);
+    }
+  }
   const handleUpdateProduct = async (id, updatedProduct) => {
+    console.log(updatedProduct);
     updateProduct({productID: id, updatedProduct});
-    onClose();
+    if(!isUpdating) {
+    editOnClose();
+    }
 };
   const textColor = useColorModeValue("gray.600", "gray.200");
   const bg = useColorModeValue("gray.100", "gray.800");
@@ -52,9 +70,11 @@ import { formatProductDate } from '../util/date';
       <Text fontWeight="bold" fontSize='xl' color={"orange.400"} mb={4}>
         ${product.price.toFixed(2)}
       </Text>
+      <Link to={`/profile/${product.user.username}`}>
       <Text fontWeight="extrabold" fontSize='xl' mb={4}>
         By: {product.user.username}
       </Text>
+      </Link>
       <Text fontWeight="bold" fontSize='xl' color={"orange.400"} mb={4}>
         {productDate}
       </Text>
@@ -72,12 +92,14 @@ import { formatProductDate } from '../util/date';
           <ModalCloseButton />
           <ModalBody>
           <VStack spacing={4}>
+              <Heading as={'h4'} size={'sm'} mb={2}>Product Name</Heading>
 							<Input
 								placeholder='Product Name'
 								name='name'
 								value={updatedProduct.name}
 								onChange={(e) => setUpdatedProduct({ ...updatedProduct, name: e.target.value })}
 							/>
+              <Heading as={'h4'} size={'sm'} mb={2}>Product Price</Heading>
 							<Input
 								placeholder='Price'
 								name='price'
@@ -85,22 +107,19 @@ import { formatProductDate } from '../util/date';
 								value={updatedProduct.price}
 								onChange={(e) => setUpdatedProduct({ ...updatedProduct, price: e.target.value })}
 							/>
+              <Heading as={'h4'} size={'sm'} mb={2}>Product Description</Heading>
               <Input
                 placeholder='Overview'
                 name='overview'
                 value={updatedProduct.overview}
                 onChange={(e) => setUpdatedProduct({ ...updatedProduct, overview: e.target.value })}
               />
-							<Input
-								placeholder='Image URL'
-								name='image'
-								value={updatedProduct.image}
-								onChange={(e) => setUpdatedProduct({ ...updatedProduct, image: e.target.value })}
-							/>
+              <Heading as={'h4'} size={'sm'} mb={2}>Product Image</Heading>
+							<input type='file' name='image' accept='image/*' ref={imgRef} onChange={handleImageChange} />
 						</VStack>
           </ModalBody>
           <ModalFooter>
-						<Button colorScheme='orange' mr={3} onClick={(e) => {e.preventDefault(); handleUpdateProduct(product._id, updatedProduct)}}>Update</Button>
+						{isUpdating ? <LoadingSpinner /> : <Button colorScheme='orange' mr={3} onClick={(e) => {e.preventDefault(); handleUpdateProduct(product._id, updatedProduct)}}>Update</Button>}
 						<Button variant='ghost' onClick={editOnClose}>Cancel</Button>
 					</ModalFooter>
         </ModalContent>

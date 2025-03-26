@@ -1,8 +1,9 @@
-import { Spinner } from '@chakra-ui/react';
+import { Spinner, Flex , Box } from '@chakra-ui/react';
 const LoadingSpinner = () => {
     return (
+    
     <Spinner
-  thickness='10px'
+  thickness='8px'
   speed='0.7s'
   emptyColor='gray.200'
   color='orange.500'

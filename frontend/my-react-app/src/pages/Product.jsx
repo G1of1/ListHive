@@ -50,9 +50,11 @@ const Product = () => {
       p={4}
     >
       <Heading textAlign="center" mb={4}>{product.name}</Heading>
+      <Link to={`/profile/${product.user.username}`}>
       <Text fontWeight="semibold" fontSize="xl" mb={4}>
           @{product.user.username}
         </Text>
+        </Link>
   
       <Image 
         src={product.image} 
@@ -71,7 +73,7 @@ const Product = () => {
           Description
         </Heading>
         <List spacing={2} textAlign="left">
-          {product.overview.split("\n").map((line, index) => (
+          {product?.overview.split("\n").map((line, index) => (
             <ListItem key={index} ml={4} position="relative">
               • {line}
             </ListItem>
@@ -86,8 +88,8 @@ const Product = () => {
         
         <Heading as = 'h3' size = 'md' mb={2} color="orange.400">Contact Info</Heading>
         <Text fontWeight="bold" fontSize="xl" mb={4}>
-          Email: {product.contactInfo.email}<br/>
-          Phone: {product.contactInfo.number}
+          Email: {product.contactInfo?.email}<br/>
+          Phone: {product.contactInfo?.number}
         </Text>
         </Box>
       </Box>

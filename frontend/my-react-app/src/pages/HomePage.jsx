@@ -1,13 +1,14 @@
-import { Container, Text, VStack, SimpleGrid, useToast, } from '@chakra-ui/react'
+import { Container, Text, VStack, SimpleGrid, useToast, Box, Flex } from '@chakra-ui/react'
 import { Link } from 'react-router-dom';
 import React from 'react'
 import { useEffect } from 'react';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../components/common/ProductCard';
 import LoadingSpinner from '../components/skeleton/LoadingSpinner';
 import { useQuery } from '@tanstack/react-query';
 
 
 const HomePage = () => {
+  
   const toast = useToast();
   const{ data: products, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['products'],
@@ -43,7 +44,7 @@ const HomePage = () => {
         lg: 3, }}
       spacing ={10}
       w = {"full"}>
-      {!isLoading ? products.map((product) => (<ProductCard key={product._id} product={product} />)): <LoadingSpinner />}
+      {!isLoading ? products.map((product) => (<ProductCard key={product._id} product={product} />)): <Flex justifyContent='center' alignItems='center'><Box w='100vw' h='100vh' flex=''><LoadingSpinner /></Box></Flex>}
       </SimpleGrid>
       {products?.length === 0 && 
       (<Text fontSize='xl' textAlign={"center"} fontWeight='bold' color='gray.500'>

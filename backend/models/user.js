@@ -26,6 +26,8 @@ const userSchema = new mongoose.Schema({
         ref: "Product",
         deafult: []
     }]
+}, {
+    timestamps: true //createdAt, updatedAt timestamps are made
 });
 
 const User = mongoose.model('User', userSchema);

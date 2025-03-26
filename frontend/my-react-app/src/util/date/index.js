@@ -30,5 +30,5 @@ export const MemberSince = (date) => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const month = months[thedate.getMonth()];
     const year = thedate.getFullYear();
-    return `Joined ${month} ${year}`;
+    return `Joined ListHive Since: ${month} ${year}`;
 }

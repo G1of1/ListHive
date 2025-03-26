@@ -1,6 +1,7 @@
 import Product from "../models/product.js";
 import mongoose from "mongoose";
 import User from '../models/user.js';
+import { v2 as cloudinary } from 'cloudinary';
 //API Routes
 export const getAllProducts = async (req, res) => {
     try {  
@@ -21,7 +22,8 @@ export const getAllProducts = async (req, res) => {
 
 export const createProduct = async (req, res) => {
     const userID = req.user._id;
-    const { name, price, overview, image, number, email} = req.body;
+    const { name, price, overview, number, email} = req.body;
+    let { image } = req.body;
     try {
         const user = await User.findById(userID);
 
@@ -31,6 +33,11 @@ export const createProduct = async (req, res) => {
         if(!name || !price || !image) {
             return res.status(400).json({error: "Please provide all necessary fields."});
     }
+
+        if(image) {
+            const uploadedResponse = await cloudinary.uploader.upload(image);
+            image = uploadedResponse.secure_url;
+        }
     const newProduct = new Product({
         user: userID,
         name: name,
@@ -56,7 +63,7 @@ export const updateProduct = async(req, res) => {
     
     try {
         const { id: productID } = req.params;
-        const {name, price, overview, image, number, email } = req.body;
+        let {name, price, overview, image, number, email } = req.body;
         const userID = req.user._id;
         if(!mongoose.Types.ObjectId.isValid(productID)) {
             return res.status(400).json({error : `Product ID is invalid`})
@@ -67,6 +74,10 @@ export const updateProduct = async(req, res) => {
         }
         if(userID.toString() !== product.user._id.toString()) {
             return res.status(400).json({error: "You are not authorized to delete this."})
+        }
+        if(image) {
+            const uploadedResponse = await cloudinary.uploader.upload(image);
+            image = uploadedResponse.secure_url;
         }
         product.price = price || product.price;
         product.name = name || product.name;
@@ -102,6 +113,10 @@ export const deleteProduct = async (req, res) => {
         if(userID.toString() !== product.user._id.toString()) {
             return res.status(400).json({error: "You are not authorized to delete this product"})
         }
+        if(product.image) {
+                    const imgID = product.image.split("/").pop().split('.')[0];
+                    await cloudinary.uploader.destroy(imgID);
+                }
 
         await Product.findByIdAndDelete(productID);
         await User.updateOne({_id: userID}, {$pull: {products: productID}});

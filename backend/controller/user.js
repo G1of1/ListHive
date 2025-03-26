@@ -1,10 +1,25 @@
+import Product from "../models/product.js";
 import User from "../models/user.js";
 import bcryptjs from "bcryptjs";
 
 export const getProfile = async (req, res) => {
     try {
         const { username } = req.params;
-        const user = await User.findOne({username}).select("-password");
+        const user = await User.findOne({username}).select("-password").populate({
+            path: "products",
+            select: "name"
+        });
+
+        /*const products = user.products;
+        let userProducts = [];
+        for(let i of products) {
+            const product = await Product.findById(i).populate({
+                path: "user",
+                select: "-password"
+            })
+        }
+        */
+
 
         if(!user) {
             return res.status(400).json({error: "User not found"});
