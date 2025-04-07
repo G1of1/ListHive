@@ -19,42 +19,52 @@ export const getAllProducts = async (req, res) => {
         res.status(500).json({error: `Error in finding products: ${error.message}`});
     }
 };
-
 export const createProduct = async (req, res) => {
     const userID = req.user._id;
-    const { name, price, overview, number, email} = req.body;
-    let { image } = req.body;
+    const { name, price, overview, number, email, coverImage } = req.body;
+    let { images } = req.body;
     try {
         const user = await User.findById(userID);
-
+        //console.log(user);
+        //console.log(name);
+        //console.log(price);
+        //console.log(`Cover Image: ${coverImage}`);
+        //console.log(`Other Images: ${images}`);
         if(!user) {
             return res.status(400).json({error: "User not found"});
         }
-        if(!name || !price || !image) {
+        if(!name || !price || !images || !coverImage) {
             return res.status(400).json({error: "Please provide all necessary fields."});
-    }
-
-        if(image) {
-            const uploadedResponse = await cloudinary.uploader.upload(image);
-            image = uploadedResponse.secure_url;
         }
-    const newProduct = new Product({
+        const theImages = [coverImage];
+        for(const image of images) {
+            theImages.push(image);
+        }
+        console.log(theImages.length);
+        const uploadedImages = [];
+        for(let i = 0; i < theImages.length; i++) {
+            const uploadedResponse = await cloudinary.uploader.upload(theImages[i]);
+            uploadedImages.push(uploadedResponse.secure_url);
+        }
+        const newProduct = new Product({
         user: userID,
         name: name,
         price: price,
         overview: overview,
-        image: image,
+        coverImage: coverImage,
+        images: uploadedImages,
         contactInfo: {
             number: number,
             email: email
         }
-    }); //new product
+    });
+    console.log(newProduct);
         await newProduct.save(); //Save new product to the database
         await User.updateOne({_id: userID}, {$push: {products: newProduct._id}}); //Updates the products the user has
         res.status(201).json(newProduct);
 }
     catch(error) {
-        console.error(`Error in saving product: ${error.message}`);
+        console.error(`Error in saving product: ${error}`);
         res.status(500).json({error: `Server Error: ${error.message}`});
     }
 };
@@ -63,7 +73,7 @@ export const updateProduct = async(req, res) => {
     
     try {
         const { id: productID } = req.params;
-        let {name, price, overview, image, number, email } = req.body;
+        let {name, price, overview, images, number, email, coverImage } = req.body;
         const userID = req.user._id;
         if(!mongoose.Types.ObjectId.isValid(productID)) {
             return res.status(400).json({error : `Product ID is invalid`})
@@ -75,14 +85,18 @@ export const updateProduct = async(req, res) => {
         if(userID.toString() !== product.user._id.toString()) {
             return res.status(400).json({error: "You are not authorized to delete this."})
         }
-        if(image) {
-            const uploadedResponse = await cloudinary.uploader.upload(image);
-            image = uploadedResponse.secure_url;
+        let allImages = [coverImage, ... images];
+        if(images || coverImage) {
+            for(let image of allImages) {
+                const uploadedResponse = await cloudinary.uploader.upload(image);
+                image = uploadedResponse.secure_url;
+            }
         }
         product.price = price || product.price;
         product.name = name || product.name;
         product.overview = overview || product.overview;
-        product.image = image || product.image;
+        product.images = allImages || product.images;
+        product.coverImage = allImages[0] || product.coverImage;
 
         const contactInfo = {
             number: number,
@@ -113,10 +127,13 @@ export const deleteProduct = async (req, res) => {
         if(userID.toString() !== product.user._id.toString()) {
             return res.status(400).json({error: "You are not authorized to delete this product"})
         }
-        if(product.image) {
-                    const imgID = product.image.split("/").pop().split('.')[0];
+        if(product.images || product.coverImage) {
+            const allImages = [product.coverImage, ...product.images];
+            for(const image of allImages) {
+                    const imgID = image.split("/").pop().split('.')[0];
                     await cloudinary.uploader.destroy(imgID);
                 }
+            }
 
         await Product.findByIdAndDelete(productID);
         await User.updateOne({_id: userID}, {$pull: {products: productID}});

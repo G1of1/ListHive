@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import LoadingSpinner from '../components/skeleton/LoadingSpinner';
 import { formatProductDate } from '../util/date';
-//TODO: Figure out why products are undefined
+//TODO: Add image slider for all images;
 const Product = () => {
   const { id } = useParams();
   const { data: product, isLoading } = useQuery({
@@ -57,7 +57,7 @@ const Product = () => {
         </Link>
   
       <Image 
-        src={product.image} 
+        src={product.images[0]} 
         alt={product.name} 
         h={48} 
         w="96" 

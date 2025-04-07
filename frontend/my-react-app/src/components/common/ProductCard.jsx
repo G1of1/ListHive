@@ -17,6 +17,7 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
   const { deleteProduct , isDeleting } = useDeleteProduct();
   const [updatedProduct, setUpdatedProduct] = useState(product);
   const [img, setImg] = useState(null);
+  const [coverImg, setCoverImg] = useState(null);
   const toast = useToast();
   const {data: authUser } = useQuery({queryKey: ['authUser']});
   const { isOpen: editIsOpen, onOpen: editOnOpen, onClose: editOnClose } = useDisclosure();
@@ -26,17 +27,37 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
 };
   const imgRef = useRef(null);
   const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const promises = files.map(file => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      })
+    })
+
+    Promise.all(promises)
+    .then(base64Images => {
+      setUpdatedProduct(prev => ({...prev, images: base64Images}))
+    }).catch(error => {console.log('Error reading image file' + error)})
+
+    
+    }
+  
+  const handleCoverImageChange = (e) => {
     const file = e.target.files[0];
-    if(file) {
+    if (!file) return;
+  
       const reader = new FileReader();
       reader.onload = () => {
-        setImg(reader.result);
-
+        setCoverImg(reader.result);
+        setUpdatedProduct(prev => ({...prev, coverImage: reader.result}))
       }
-      reader.readAsDataURL(file);
-      setUpdatedProduct({...updatedProduct, image: img});
-      console.log(updatedProduct.image);
-    }
+      reader.onerror = () => {
+        console.log('Error reading cover image file');
+      }
+    reader.readAsDataURL(file);
   }
   const handleUpdateProduct = async (id, updatedProduct) => {
     console.log(updatedProduct);
@@ -60,7 +81,7 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
     _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
     bg={bg}
     >
-      <Image src={product.image} alt={product.name} h={48} w='full' objectFit='cover' />
+      <Image src={product.images[0]} alt={product.name} h={48} w='full' objectFit='cover' />
       <Box p={4}>
       <Link to={`/product/${product._id}`}>
       <Heading as= 'h3' size='md' mb={2}>
@@ -115,7 +136,11 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
                 onChange={(e) => setUpdatedProduct({ ...updatedProduct, overview: e.target.value })}
               />
               <Heading as={'h4'} size={'sm'} mb={2}>Product Image</Heading>
-							<input type='file' name='image' accept='image/*' ref={imgRef} onChange={handleImageChange} />
+              <Heading as={'h4'} size={'sm'} mb={2}>Cover Image</Heading>
+              <input type='file' name= 'coverImage' accept='image/*' onChange={handleCoverImageChange} />
+              <Heading as={'h4'} size={'sm'} mb={2}>Other Images</Heading>
+              <input type='file' name='image' accept='image/*' ref={imgRef} onChange={handleImageChange} />
+              
 						</VStack>
           </ModalBody>
           <ModalFooter>

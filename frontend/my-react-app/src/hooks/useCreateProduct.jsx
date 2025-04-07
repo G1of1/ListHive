@@ -12,7 +12,7 @@ const useCreateProduct = () => {
             const res = await fetch(`/api/products/create`, {
                 method: "POST",
 			          headers: {"Content-Type": "application/json"},
-			          body: JSON.stringify({name: product.name, price: product.price, overview: product.overview, image: product.image})
+			          body: JSON.stringify({name: product.name, price: product.price, overview: product.overview, images: product.images, coverImage: product.coverImage})
             })
             const data = await res.json()
             if(!res.ok) {

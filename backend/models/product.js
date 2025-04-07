@@ -17,10 +17,15 @@ const productSchema = new mongoose.Schema({
     overview: {
         type: String,
     },
-    image: {
-        type: String, 
+    coverImage: {
+        type:String,
         required: true
     },
+    images: [{
+        type: String,
+        required: true,
+        default: []
+    }],
     contactInfo: {
         number: {
             type: String
