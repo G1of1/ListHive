@@ -33,7 +33,11 @@ const productSchema = new mongoose.Schema({
         email: {
             type: String
         }
-    }
+    },
+    categories: [{
+        type: String,
+        default: []
+    }]
 }, {
     timestamps: true //createdAt, updatedAt timestamps are made
 });

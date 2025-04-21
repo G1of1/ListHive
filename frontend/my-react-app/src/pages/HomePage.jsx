@@ -40,9 +40,9 @@ const HomePage = () => {
   return (
     <Container maxW="container.xl" py={12} >
       <VStack spacing={8}>
-      <Text fontSize={30} fontWeight={"bold"} bgGradient={"linear(to-r, orange.400, red.400)"} bgClip={"text"} textAlign={"center"}>Products✨</Text>
+      <Text fontSize={30} fontWeight={"bold"} bgGradient={"linear(to-r, orange.400, red.400)"} bgClip={"text"} textAlign={"center"}>Listings✨</Text>
       <Box w={"50%"} rounded={'lg'} shadow={'md'} p={6} align={'center'} alignItems={'center'} justifyContent={'center'}>
-        <Input w={"65%"} placeholder='Search Products 🔍' value={text} onChange={(e)=> {setText(e.target.value)}}/>
+        <Input w={"65%"} placeholder='Search 🔍' value={text} onChange={(e)=> {setText(e.target.value)}}/>
       </Box>
       <SimpleGrid 
       columns={{

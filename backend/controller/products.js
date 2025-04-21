@@ -21,7 +21,7 @@ export const getAllProducts = async (req, res) => {
 };
 export const createProduct = async (req, res) => {
     const userID = req.user._id;
-    const { name, price, overview, number, email, coverImage } = req.body;
+    const { name, price, overview, number, email, coverImage, categories } = req.body;
     let { images } = req.body;
     try {
         const user = await User.findById(userID);
@@ -30,12 +30,19 @@ export const createProduct = async (req, res) => {
         //console.log(price);
         //console.log(`Cover Image: ${coverImage}`);
         //console.log(`Other Images: ${images}`);
+        console.log(`Categories: ${categories}`);
         if(!user) {
             return res.status(400).json({error: "User not found"});
         }
         if(!name || !price || !images || !coverImage) {
             return res.status(400).json({error: "Please provide all necessary fields."});
         }
+        if(categories) {
+            if(categories.length > 3) {
+                return res.status(400).json({error: "Please only select 3 categories"});
+            }
+        }
+        
         const theImages = [coverImage];
         for(const image of images) {
             theImages.push(image);
@@ -56,15 +63,15 @@ export const createProduct = async (req, res) => {
         contactInfo: {
             number: number,
             email: email
-        }
+        },
+        categories: categories,
     });
-    console.log(newProduct);
         await newProduct.save(); //Save new product to the database
         await User.updateOne({_id: userID}, {$push: {products: newProduct._id}}); //Updates the products the user has
         res.status(201).json(newProduct);
 }
     catch(error) {
-        console.error(`Error in saving product: ${error}`);
+        console.error(`Error in saving product: ${error.message}`);
         res.status(500).json({error: `Server Error: ${error.message}`});
     }
 };
@@ -152,17 +159,24 @@ export const getUserProducts = async (req, res) => {
         if(!user) {
             return res.status(400).json({error: "User not found"})
         }
-        const userProducts = user.products;
+        const userProducts = user.products || [];
 
-        let products = [];
-        for(let i of userProducts) {
-            const p = await Product.findById(i).populate({
-                path: "user",
-                select: "-password"
-            });
-            products.push(p);
+        const products = [];
+
+        for (let i of userProducts) {
+            const product = await Product.findById(i).populate({
+            path: "user",
+            select: "-password"
+        });
+
+        if (product) {
+            products.push(product);
         }
+        }
+
+    // Final response will now NEVER contain null
         res.status(200).json(products);
+        
     }
     catch(error) {
         res.status(500).json({error: `Internal Server Error: ${error.message}`})

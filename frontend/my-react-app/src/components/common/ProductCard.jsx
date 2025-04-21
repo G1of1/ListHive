@@ -1,4 +1,6 @@
-import { Box, Heading, VStack, HStack, IconButton, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, ModalFooter, useColorModeValue } from '@chakra-ui/react'
+import { Box, Heading, VStack, HStack, IconButton, Image, Modal, ModalBody, ModalCloseButton, ModalContent, 
+  ModalHeader, ModalOverlay, Text, ModalFooter, Tag, TagLabel, TagLeftIcon, TagRightIcon, TagCloseButton, 
+  useColorModeValue } from '@chakra-ui/react'
 import React from 'react'
 import { useState, useRef } from 'react';
 import { Button, Input } from '@chakra-ui/react';
@@ -69,7 +71,7 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
   const textColor = useColorModeValue("gray.600", "gray.200");
   const bg = useColorModeValue("gray.100", "gray.800");
 
-  const productDate = formatProductDate(product.createdAt);
+  const productDate = formatProductDate(product?.createdAt);
 
   return (
     <>
@@ -81,29 +83,36 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
     _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
     bg={bg}
     >
-      <Image src={product.images[0]} alt={product.name} h={48} w='full' objectFit='cover' />
+      <Image src={product?.images[0]} alt={product?.name} h={48} w='full' objectFit='cover' />
       <Box p={4}>
-      <Link to={`/product/${product._id}`}>
+      <Link to={`/product/${product?._id}`}>
       <Heading as= 'h3' size='md' mb={2}>
-        {product.name}
+        {product?.name}
       </Heading>
       </Link>
       <Text fontWeight="bold" fontSize='xl' color={"orange.400"} mb={4}>
-        ${product.price.toFixed(2)}
+        ${product?.price.toFixed(2)}
       </Text>
-      <Link to={`/profile/${product.user.username}`}>
+      <Link to={`/profile/${product?.user.username}`}>
       <Text fontWeight="extrabold" fontSize='xl' mb={4}>
-        By: {product.user.username}
+        By: {product?.user.username}
       </Text>
       </Link>
       <Text fontWeight="bold" fontSize='xl' color={"orange.400"} mb={4}>
         {productDate}
       </Text>
+      <HStack spacing={4}>
+      {product?.catergories?.map((category) => (
+      <Tag size={'sm'} key={product} variant='solid' colorScheme='teal'>
+        {category}
+      </Tag>
+      ))}
+      </HStack>
       
       <HStack spacing={2}>
-        {authUser._id === product.user._id && (<>
+        {authUser._id === product?.user._id && (<>
         <IconButton icon={<EditIcon />} onClick={editOnOpen}colorScheme={"orange"}></IconButton>
-        <IconButton icon={<DeleteIcon />} onClick={deleteOnOpen} colorScheme={"red"}></IconButton></>)}
+        <IconButton icon={<DeleteIcon />} onClick={deleteOnOpen} colorScheme={"red"}>{isDeleting && <LoadingSpinner />}</IconButton></>)}
       </HStack>
       </Box>
       <Modal isOpen={editIsOpen} onClose={editOnClose}>
@@ -117,7 +126,7 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
 							<Input
 								placeholder='Product Name'
 								name='name'
-								value={updatedProduct.name}
+								value={updatedProduct?.name}
 								onChange={(e) => setUpdatedProduct({ ...updatedProduct, name: e.target.value })}
 							/>
               <Heading as={'h4'} size={'sm'} mb={2}>Product Price</Heading>
@@ -125,14 +134,14 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
 								placeholder='Price'
 								name='price'
 								type='number'
-								value={updatedProduct.price}
+								value={updatedProduct?.price}
 								onChange={(e) => setUpdatedProduct({ ...updatedProduct, price: e.target.value })}
 							/>
               <Heading as={'h4'} size={'sm'} mb={2}>Product Description</Heading>
               <Input
                 placeholder='Overview'
                 name='overview'
-                value={updatedProduct.overview}
+                value={updatedProduct?.overview}
                 onChange={(e) => setUpdatedProduct({ ...updatedProduct, overview: e.target.value })}
               />
               <Heading as={'h4'} size={'sm'} mb={2}>Product Image</Heading>
@@ -144,7 +153,7 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
 						</VStack>
           </ModalBody>
           <ModalFooter>
-						{isUpdating ? <LoadingSpinner /> : <Button colorScheme='orange' mr={3} onClick={(e) => {e.preventDefault(); handleUpdateProduct(product._id, updatedProduct)}}>Update</Button>}
+						{isUpdating ? <LoadingSpinner /> : <Button colorScheme='orange' mr={3} onClick={(e) => {e.preventDefault(); handleUpdateProduct(product?._id, updatedProduct)}}>Update</Button>}
 						<Button variant='ghost' onClick={editOnClose}>Cancel</Button>
 					</ModalFooter>
         </ModalContent>

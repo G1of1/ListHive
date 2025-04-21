@@ -34,6 +34,7 @@ const Product = () => {
   }) 
   console.log(product);
   const productImages = product ? [product?.coverImage, ...product.images] : [];
+  productImages.pop();
   const [index, setIndex] = useState(0);
   const prevImage = () => {
     setIndex(prev => (prev - 1 + productImages.length) % productImages.length);
@@ -86,13 +87,7 @@ const Product = () => {
         <Heading as="h3" size="md" mb={2} color="orange.400">
           Description
         </Heading>
-        <List spacing={2} textAlign="left">
-          {product?.overview.split("\n").map((line, index) => (
-            <ListItem key={index} ml={4} position="relative">
-              • {line}
-            </ListItem>
-          ))}
-        </List>
+          {product?.overview}
         </Box>
         <Box p={4} justifyContent="center" flexDirection = "column" w="50%">
           <Heading as= "h3" size="md" mb={2} color="orange.400">Price</Heading>

@@ -14,6 +14,7 @@ AvatarBadge, AvatarGroup,
  } from '@chakra-ui/react'
 import { Link } from 'react-router-dom';
 import { FaPlus } from "react-icons/fa";
+import { IoMdAddCircle } from "react-icons/io";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 
@@ -60,7 +61,7 @@ const NavBar = () => {
 	<HStack w='33%' spacing={2} justifyContent='flex-start'>
 	  <Link to={"/create"}>
         <Button>
-          <FaPlus /> 🛒
+		<IoMdAddCircle /> <Text ml={4}>Create New Listing</Text>
         </Button>
       </Link>
     {/* Left Spacer to help center the title */}
@@ -80,7 +81,7 @@ const NavBar = () => {
     {/* Right Buttons */}
     <HStack w="33%" spacing={2} justifyContent="flex-end">
       <Link to={`/products/${authUser.username}`}>
-        <Button>Your Products</Button>
+        <Button>Your Listings</Button>
       </Link>
 	  
 	  <Menu>
