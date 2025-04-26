@@ -21,7 +21,7 @@ export const getAllProducts = async (req, res) => {
 };
 export const createProduct = async (req, res) => {
     const userID = req.user._id;
-    const { name, price, overview, number, email, coverImage, categories } = req.body;
+    const { name, price, overview, number, email, coverImage, category } = req.body;
     let { images } = req.body;
     try {
         const user = await User.findById(userID);
@@ -30,17 +30,11 @@ export const createProduct = async (req, res) => {
         //console.log(price);
         //console.log(`Cover Image: ${coverImage}`);
         //console.log(`Other Images: ${images}`);
-        console.log(`Categories: ${categories}`);
         if(!user) {
             return res.status(400).json({error: "User not found"});
         }
         if(!name || !price || !images || !coverImage) {
             return res.status(400).json({error: "Please provide all necessary fields."});
-        }
-        if(categories) {
-            if(categories.length > 3) {
-                return res.status(400).json({error: "Please only select 3 categories"});
-            }
         }
         
         const theImages = [coverImage];
@@ -64,7 +58,7 @@ export const createProduct = async (req, res) => {
             number: number,
             email: email
         },
-        categories: categories,
+        category: category,
     });
         await newProduct.save(); //Save new product to the database
         await User.updateOne({_id: userID}, {$push: {products: newProduct._id}}); //Updates the products the user has

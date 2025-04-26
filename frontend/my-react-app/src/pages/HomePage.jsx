@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 
 
 const HomePage = () => {
-//TODO: Completely Finish searchbar functionality
+//TODO: Finish categories integration
   const toast = useToast();
   const{ data: products, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['products'],

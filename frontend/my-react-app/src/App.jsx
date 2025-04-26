@@ -32,13 +32,14 @@ function App() {
     },
     retry: true
   });
+  const bgColor = useColorModeValue("gray.250", "gray.900");
   if(isLoading) {
     return (
       <LoadingSpinner />
     )
   }
   return(
-    <Box minH = {"100vh"} bg={useColorModeValue("gray.250", "gray.900")}>
+    <Box minH = {"100vh"} bg={bgColor}>
       {authUser ? <NavBar/> : <UnAuthNavBar />}
       <Routes>
         <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />}/>

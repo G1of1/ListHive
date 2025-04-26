@@ -34,10 +34,9 @@ const productSchema = new mongoose.Schema({
             type: String
         }
     },
-    categories: [{
+    category: {
         type: String,
-        default: []
-    }]
+    }
 }, {
     timestamps: true //createdAt, updatedAt timestamps are made
 });

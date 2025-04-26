@@ -21,7 +21,6 @@ const { data: authUser, isLoading, isRefetching, refetch } = useQuery({queryKey:
 const userDate = MemberSince(user?.createdAt);
 const bg = useColorModeValue("gray.100", "gray.800");
 return (
-  
     <Flex alignItems="center" justifyContent="center" textAlign="center" w="full">
       {isGettingProfile ? <LoadingSpinner /> :
         <Box

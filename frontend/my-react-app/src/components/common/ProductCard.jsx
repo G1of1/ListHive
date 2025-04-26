@@ -102,11 +102,10 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
         {productDate}
       </Text>
       <HStack spacing={4}>
-      {product?.catergories?.map((category) => (
-      <Tag size={'sm'} key={product} variant='solid' colorScheme='teal'>
-        {category}
+      
+      <Tag size={'sm'} key={product} variant='solid' colorScheme='orange' mb={4}>
+        {product?.category}
       </Tag>
-      ))}
       </HStack>
       
       <HStack spacing={2}>
