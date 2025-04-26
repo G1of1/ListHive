@@ -1,4 +1,5 @@
-import { Box, Button, Container, Heading, Input, useColorModeValue, VStack, useToast, Textarea } from "@chakra-ui/react";
+import { Box, Button, Container, Heading, Input, useColorModeValue, VStack, Textarea, SimpleGrid, Radio, RadioGroup } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import React, { useRef, useState } from 'react';
 import useCreateProduct from "../hooks/useCreateProduct";
 import LoadingSpinner from '../components/skeleton/LoadingSpinner'
@@ -14,7 +15,7 @@ const CreatePage = () => {
 	overview: "",
 	email: "",
 	number: "",
-	categories: categories
+	category: ""
  });
  	const [img, setImg] = useState(null);
  	const [coverImg, setCoverImg] = useState(null);
@@ -125,12 +126,35 @@ const CreatePage = () => {
 						<input type='file' name = 'coverImage' accept='image/*' ref={coverImgRef} onChange={handleCoverImageSubmit} />
 						<Heading as={"h4"} size={'sm'} textAlign={"center"} mb={2}>Additional Images</Heading>
 						<input type='file' multiple={true} name='image' accept="image/*" ref={imgRef} onChange={handleImageSubmit}  />
-						<Heading as={'h4'} size={'md'} textAlign={'center'} mb={2}>Categories</Heading>
-						<Input type='string' 
+						<Heading as={'h4'} size={'md'} textAlign={'center'} mb={2}>Category</Heading>
+						{/*<Input 
 							name='categories'
-							placeholder = "Categories"
-						/>
-						<Button onClick={handleCategories}>Add Category</Button>
+							value={newProduct.category}
+							placeholder = "Category"
+							onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+						/>*/}
+						<RadioGroup
+  						colorScheme="orange"
+  						value={newProduct.category} // this should be an array now
+  						onChange={(selectedCategories) => setNewProduct({...newProduct, category: selectedCategories})}
+						>
+  						<SimpleGrid columns={3} spacing={5}>
+    					<Radio value="Appliances">Appliances</Radio>
+    					<Radio value="Arts and Crafts">Arts and Crafts</Radio>
+    					<Radio value="Auto">Auto</Radio>
+    					<Radio value="Beauty">Beauty</Radio>
+    					<Radio value="Clothing and Accessories">Clothing and Accessories</Radio>
+    					<Radio value="Shoes">Shoes</Radio>
+    					<Radio value="Electronics">Electronics</Radio>
+    					<Radio value="Computers">Computers</Radio>
+    					<Radio value="Furniture">Furniture</Radio>
+    					<Radio value="Farm/Garden">Farm/Garden</Radio>
+    					<Radio value="Video Games">Video Games</Radio>
+    					<Radio value="Tools">Tools</Radio>
+    					<Radio value="Sports">Sports</Radio>
+    					<Radio value="Other">Other</Radio>
+  					</SimpleGrid>
+					</RadioGroup>
 
 						<Heading as={'h3'} size={'md'} textAlign={'center'} mb={2}>Contact Info</Heading>
 						<Input
