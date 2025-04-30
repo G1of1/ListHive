@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-// Creating the schema for products(docs in the collection).
+// Product Model
 const productSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,

@@ -2,13 +2,12 @@ import Product from "../models/product.js";
 import mongoose from "mongoose";
 import User from '../models/user.js';
 import { v2 as cloudinary } from 'cloudinary';
-//API Routes
 export const getAllProducts = async (req, res) => {
     try {  
         const products = await Product.find().sort({createdAt: -1}).populate({
             path: "user",
             select: "-password"
-        }) //Get all products and sort by the most recent
+        })
         if(products.length === 0) {
             return res.status(200).json([])
         }
@@ -212,3 +211,260 @@ export const getProductContactInfo = async (req, res) => {
         res.status(500).json({error: `Internal Server Error: ${error.message}`});
     }
 }
+/*export const getCategoryProducts = async (req, res) => {
+    try {
+        const { category } = req.params;  
+        const products = await Product.find({category: category }).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+}
+    */
+export const getAppliances = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Appliances"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+
+}
+export const getBeauty = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Beauty"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+
+}
+export const getElectronics = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Electronics"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+
+}
+export const getArtsandCrafts = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Arts and Crafts"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+
+}
+export const getAuto = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Auto"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+
+}
+export const getClothing = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Clothing and Accessories"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+
+}
+export const getShoes = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Shoes"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+
+}
+export const getComputers = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Computers"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+
+}
+export const getFurniture = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Furniture"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+    
+}
+export const getFarmAndGarden = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Farm/Garden"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+    
+}
+export const getVideoGames = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Video Games"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+    
+}
+export const getTools = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Tools"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+    
+}
+export const getSports = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Sports"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+    
+}
+export const getOther = async (req, res) => {
+    try {  
+        const products = await Product.find({category: "Other"}).sort({createdAt: -1}).populate({
+            path: "user",
+            select: "-password"
+        }) //Get all products and sort by the most recent
+        if(products.length === 0) {
+            return res.status(200).json([])
+        }
+        res.status(200).json(products);
+    }
+    catch(error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({error: `Error in finding products: ${error.message}`});
+    }
+    
+}
+    
