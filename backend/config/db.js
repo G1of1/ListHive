@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-//Function used to connect to the database
+//Database configuration
 export const connectDB = async () => {
 
     try {
