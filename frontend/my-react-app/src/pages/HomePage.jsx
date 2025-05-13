@@ -83,15 +83,21 @@ const HomePage = () => {
       <Box w={"50%"} rounded={'lg'} shadow={'md'} p={6} align={'center'} alignItems={'center'} justifyContent={'center'}>
         <Input w={"65%"} placeholder='Search 🔍' value={text} onChange={(e)=> {setText(e.target.value)}}/>
       </Box>
-      <SimpleGrid 
-      columns={{
-        base: 1,
-        md: 2,
-        lg: 3, }}
-      spacing ={10}
-      w = {"full"}>
-      {!isLoading ? filteredProducts.map((product) => (<ProductCard key={product._id} product={product} />)):<Box w='100vw' h='100vh' flex='column' alignItems={'center'}><LoadingSpinner /></Box>}
-      </SimpleGrid>
+      {isLoading ? (
+  <Flex w="100vw" h="80vh" justify="center" align="center">
+    <LoadingSpinner />
+  </Flex>
+) : (
+  <SimpleGrid
+    columns={{ base: 1, md: 2, lg: 3 }}
+    spacing={10}
+    w="full"
+  >
+    {filteredProducts.map((product) => (
+      <ProductCard key={product._id} product={product} />
+    ))}
+    </SimpleGrid>
+)}
       {filteredProducts?.length === 0 && 
       (<Text fontSize='xl' textAlign={"center"} fontWeight='bold' color='gray.500'>
         No Products found...{" "}

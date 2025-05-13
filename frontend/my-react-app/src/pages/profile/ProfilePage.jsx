@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link, useParams } from 'react-router-dom';
-import { Box, Flex, Heading, Text, useColorModeValue, Avatar, AvatarBadge, AvatarGroup, List, ListItem} from '@chakra-ui/react';
+import { useParams } from 'react-router-dom';
+import { Box, Flex, Heading, Text, useColorModeValue, Avatar, AvatarBadge, AvatarGroup, List, ListItem, HStack, SimpleGrid, Link } from '@chakra-ui/react';
 import { MemberSince } from '../../util/date';
 import LoadingSpinner from '../../components/skeleton/LoadingSpinner';
 const ProfilePage = () => {
@@ -17,7 +17,6 @@ const { username } = useParams();
         return data;
     }
 })
-const { data: authUser, isLoading, isRefetching, refetch } = useQuery({queryKey: ['authUser']})
 const userDate = MemberSince(user?.createdAt);
 const bg = useColorModeValue("gray.100", "gray.800");
 return (
@@ -46,12 +45,14 @@ return (
           <Box p={4} textAlign="center" display="flex" flexDirection='column' justifyContent='center'>
               <Text>{userDate}</Text>
             <Box>
-              <Text>{username} 's Products: </Text>
-              <List spacing={2}>
+              <span style={{backgroundColor : 'orange'}}>
+              <Text mb={8}>{username} 's Products: </Text>
+              </span>
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} textAlign={'center'} >
                 {user?.products.map((product)=> {
-                  return <Link to={`/product/${product._id}`}><ListItem key={product._id}>- {product.name}</ListItem></Link>
+                  return <Link href={`/product/${product._id}`}>{product.name}</Link>
                 })}
-              </List>
+              </SimpleGrid>
             </Box>
           </Box>
         </Box>

@@ -47,7 +47,10 @@ const Product = () => {
   const bg = useColorModeValue("gray.100", "gray.800");
   return (
     <>
-    {isLoading ? <LoadingSpinner /> : 
+    {isLoading ? (
+  <Flex w="100vw" h="80vh" justify="center" align="center">
+    <LoadingSpinner />
+  </Flex>) : 
     <Flex alignItems="center" justifyContent="center" textAlign="center" w="full">
     <Box
       shadow="lg"
