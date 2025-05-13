@@ -1,7 +1,7 @@
 import { Box, Button, Container, Heading, Input, useColorModeValue, VStack, Textarea, SimpleGrid, Radio, RadioGroup } from "@chakra-ui/react";
 import React, { useRef, useState } from 'react';
-import useCreateProduct from "../hooks/useCreateProduct";
-import LoadingSpinner from '../components/skeleton/LoadingSpinner'
+import useCreateProduct from "../../hooks/useCreateProduct";
+import LoadingSpinner from '../../components/skeleton/LoadingSpinner'
 
 // TODO: Fix Product Categories
 const CreatePage = () => {

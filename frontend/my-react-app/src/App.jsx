@@ -1,17 +1,17 @@
 import { Box, useColorModeValue, Flex } from '@chakra-ui/react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import CreatePage from './pages/CreatePage';
+import HomePage from './pages/common/HomePage';
+import CreatePage from './pages/common/CreatePage';
 import NavBar from './components/common/NavBar';
 import RegisterPage from './pages/auth/RegisterPage';
 import LoginPage from './pages/auth/LoginPage';
 import LoadingSpinner from './components/skeleton/LoadingSpinner';
 import { useQuery } from '@tanstack/react-query';
 import UnAuthNavBar from './components/common/UnAuthNavBar';
-import ProductsPage from './pages/ProductsPage';
-import Product from './pages/Product';
+import ProductsPage from './pages/common/ProductsPage';
+import Product from './pages/common/Product';
 import ProfilePage from './pages/profile/ProfilePage';
-import LandingPage from './pages/auth/LandingPage';
+import LandingPage from './pages/common/LandingPage';
 import Footer from './components/common/Footer';
 
 function App() {

@@ -2,8 +2,8 @@ import React from 'react'
 import { Box, Heading, VStack, HStack, IconButton, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, ModalFooter, useColorModeValue, Flex, List, ListItem, Button } from '@chakra-ui/react'
 import { Link, useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import LoadingSpinner from '../components/skeleton/LoadingSpinner';
-import { formatProductDate } from '../util/date';
+import LoadingSpinner from '../../components/skeleton/LoadingSpinner';
+import { formatProductDate } from '../../util/date/index.js';
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
 import { useState } from 'react';
 

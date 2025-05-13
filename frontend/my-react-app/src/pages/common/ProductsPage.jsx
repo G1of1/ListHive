@@ -3,8 +3,8 @@ import React from 'react'
 import { Container, Text, VStack, SimpleGrid, useToast, Flex} from '@chakra-ui/react'
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import ProductCard from '../components/common/ProductCard';
-import LoadingSpinner from '../components/skeleton/LoadingSpinner';
+import ProductCard from '../../components/common/ProductCard';
+import LoadingSpinner from '../../components/skeleton/LoadingSpinner';
 
 
 const ProductsPage = () => {

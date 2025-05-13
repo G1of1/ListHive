@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { FaTags, FaSearch, FaPlusCircle } from 'react-icons/fa';
+import { GiTreeBeehive } from "react-icons/gi";
 
 const LandingPage = () => {
   return (
@@ -32,17 +33,12 @@ const LandingPage = () => {
                 <Button colorScheme="whiteAlpha" as={Link} to="/create">
                   Create a Listing
                 </Button>
-                <Button bg="white" color="orange.400" _hover={{ bg: 'gray.100' }} as={Link} to="/">
+                <Button bg="white" color="orange.400" _hover={{ bg: 'gray.100' }} as={Link} to="/login">
                   Browse Listings
                 </Button>
               </Stack>
             </VStack>
-            <Image
-              src="https://cdn-icons-png.flaticon.com/512/2991/2991136.png"
-              alt="ListHive Illustration"
-              boxSize="300px"
-              mt={{ base: 12, md: 0 }}
-            />
+            <GiTreeBeehive size="sm"/>
           </Flex>
         </Container>
       </Box>
