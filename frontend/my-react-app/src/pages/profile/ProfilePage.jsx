@@ -1,64 +1,131 @@
-import { useQuery } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom';
-import { Box, Flex, Heading, Text, useColorModeValue, Avatar, AvatarBadge, AvatarGroup, List, ListItem, HStack, SimpleGrid, Link } from '@chakra-ui/react';
-import { MemberSince } from '../../util/date';
+import {
+  useQuery
+} from '@tanstack/react-query';
+import {
+  useParams
+} from 'react-router-dom';
+import {
+  Box,
+  Flex,
+  Heading,
+  Text,
+  useColorModeValue,
+  Avatar,
+  SimpleGrid,
+  Link,
+  Divider,
+  VStack,
+  SkeletonCircle,
+  SkeletonText,
+  Badge
+} from '@chakra-ui/react';
+import {
+  MemberSince
+} from '../../util/date';
 import LoadingSpinner from '../../components/skeleton/LoadingSpinner';
+
 const ProfilePage = () => {
-const { username } = useParams();
-    const { data: user, isLoading: isGettingProfile } = useQuery({
+  const {
+    username
+  } = useParams();
+
+  const {
+    data: user,
+    isLoading: isGettingProfile
+  } = useQuery({
     queryKey: ['userProfile'],
     queryFn: async () => {
-        const res = await fetch(`/api/profile/${username}`);
-        const data = await res.json();
-        console.log(data);
-        if(!res.ok) {
-            console.error(data.error);
-        }
-        return data;
+      const res = await fetch(`/api/profile/${username}`);
+      const data = await res.json();
+      if (!res.ok) {
+        console.error(data.error);
+      }
+      return data;
     }
-})
-const userDate = MemberSince(user?.createdAt);
-const bg = useColorModeValue("gray.100", "gray.800");
-return (
-    <Flex alignItems="center" justifyContent="center" textAlign="center" w="full">
-      {isGettingProfile ? <LoadingSpinner /> :
+  });
+
+  const userDate = MemberSince(user?.createdAt);
+  const bg = useColorModeValue("gray.50", "gray.900");
+  const cardBg = useColorModeValue("white", "gray.800");
+
+  return (
+    <Flex align="center" justify="center" px={4} py={10} minH="100vh" bg={bg}>
+      {isGettingProfile ? (
+        <LoadingSpinner />
+      ) : (
         <Box
-          shadow="lg"
-          rounded="lg"
-          overflow="hidden"
-          transition="all 0.3s"
-          w="8xl"
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          p={4}
-          bg={bg}
+          bg={cardBg}
+          maxW="5xl"
+          w="full"
+          rounded="2xl"
+          shadow="xl"
+          p={8}
+          transition="all 0.3s ease"
         >
-          
-          <Box display='flex' justifyContent='center'>
-          <Avatar size='xl' name={username} src={user?.avatar} />
-          </Box>
-          <Heading textAlign="center" mb={2}></Heading>
-          <Text fontWeight="semibold" fontSize="xl" mb={1}>
+          <Flex direction="column" align="center" mb={6}>
+            <Avatar
+              size="2xl"
+              name={username}
+              src={user?.avatar}
+              mb={4}
+              shadow="md"
+            />
+            <Heading fontSize="2xl" fontWeight="bold">
               {username}
+            </Heading>
+            <Text fontSize="sm" color="gray.500">
+              Member since {userDate}
             </Text>
-          <Box p={4} textAlign="center" display="flex" flexDirection='column' justifyContent='center'>
-              <Text>{userDate}</Text>
-            <Box>
-              <span style={{backgroundColor : 'orange'}}>
-              <Text mb={8}>{username} 's Products: </Text>
-              </span>
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} textAlign={'center'} >
-                {user?.products.map((product)=> {
-                  return <Link href={`/product/${product._id}`}>{product.name}</Link>
-                })}
+          </Flex>
+
+          <Divider mb={6} />
+
+          <Box>
+            <Heading
+              size="md"
+              color="orange.400"
+              mb={4}
+              textAlign="center"
+              fontWeight="semibold"
+            >
+              {username}'s Products
+            </Heading>
+
+            {user?.products?.length > 0 ? (
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={5}>
+                {user.products.map((product) => (
+                  <Box
+                    key={product._id}
+                    p={4}
+                    bg={useColorModeValue("gray.100", "gray.700")}
+                    rounded="lg"
+                    shadow="sm"
+                    _hover={{ shadow: "md", transform: "translateY(-2px)" }}
+                    transition="0.2s"
+                    textAlign="center"
+                  >
+                    <Link
+                      href={`/product/${product._id}`}
+                      fontWeight="medium"
+                      fontSize="lg"
+                      color="orange.400"
+                      _hover={{ textDecor: "underline" }}
+                    >
+                      {product.name}
+                    </Link>
+                  </Box>
+                ))}
               </SimpleGrid>
-            </Box>
+            ) : (
+              <Text textAlign="center" color="gray.500">
+                This user hasn’t posted any products yet.
+              </Text>
+            )}
           </Box>
         </Box>
-}
-      </Flex>
-)
-}
+      )}
+    </Flex>
+  );
+};
 
 export default ProfilePage;

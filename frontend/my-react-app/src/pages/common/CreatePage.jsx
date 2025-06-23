@@ -1,182 +1,258 @@
-import { Box, Button, Container, Heading, Input, useColorModeValue, VStack, Textarea, SimpleGrid, Radio, RadioGroup } from "@chakra-ui/react";
-import React, { useRef, useState } from 'react';
+import {
+  Box,
+  Button,
+  Container,
+  Heading,
+  Input,
+  useColorModeValue,
+  VStack,
+  Textarea,
+  SimpleGrid,
+  Radio,
+  RadioGroup,
+  Stack,
+  FormControl,
+  FormLabel,
+  Image,
+  Divider
+} from "@chakra-ui/react";
+import React, { useRef, useState } from "react";
 import useCreateProduct from "../../hooks/useCreateProduct";
-import LoadingSpinner from '../../components/skeleton/LoadingSpinner'
+import LoadingSpinner from "../../components/skeleton/LoadingSpinner";
 
-// TODO: Fix Product Categories
 const CreatePage = () => {
-	const [categories, setCategories] = useState([]);
-	const [ newProduct , setNewProduct ] = useState({
+  const [newProduct, setNewProduct] = useState({
     name: "",
-    price : "",
-	coverImage: "",
-    images : [],
-	overview: "",
-	email: "",
-	number: "",
-	category: ""
- });
- 	const [img, setImg] = useState(null);
- 	const [coverImg, setCoverImg] = useState(null);
- 
- 	const imgRef = useRef(null);
- 	const coverImgRef = useRef(null);
- 	const handleImageSubmit = (e) => {
-	const files = Array.from(e.target.files);
+    price: "",
+    coverImage: "",
+    images: [],
+    overview: "",
+    email: "",
+    number: "",
+    category: ""
+  });
 
-	const promises = files.map(file => {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = () => resolve(reader.result);
-			reader.onerror = reject;
-			reader.readAsDataURL(file);
-		});
-	});
+  const [coverImg, setCoverImg] = useState(null);
+  const imgRef = useRef(null);
+  const coverImgRef = useRef(null);
 
-	Promise.all(promises)
-		.then(base64Images => {
-			setNewProduct(prev => ({
-				...prev,
-				images: base64Images,
-			}));
-		})
-		.catch(error => {
-			console.error('Error reading image files:', error);
-		});
-};
+  const { createProduct, isCreating } = useCreateProduct();
 
-// Handles single image (cover)
-	const handleCoverImageSubmit = (e) => {
-		const file = e.target.files[0];
+  const handleImageSubmit = (e) => {
+    const files = Array.from(e.target.files);
+    const promises = files.map((file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    });
 
-		if (!file) return;
+    Promise.all(promises)
+      .then((base64Images) => {
+        setNewProduct((prev) => ({
+          ...prev,
+          images: base64Images
+        }));
+      })
+      .catch((error) => {
+        console.error("Error reading image files:", error);
+      });
+  };
 
-		const reader = new FileReader();
+  const handleCoverImageSubmit = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-		reader.onload = () => {
-			const base64 = reader.result;
-			setCoverImg(base64); // Optional: if you want to preview it separately
-			setNewProduct(prev => ({
-				...prev,
-				coverImage: base64,
-			}));
-	};
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result;
+      setCoverImg(base64);
+      setNewProduct((prev) => ({
+        ...prev,
+        coverImage: base64
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
 
-		reader.onerror = () => {
-			console.error('Error reading cover image file');
-		};
+  const addProduct = async () => {
+    const data = await createProduct({ product: newProduct });
+    if (!data.error) {
+      setNewProduct({
+        name: "",
+        price: "",
+        coverImage: "",
+        images: [],
+        overview: "",
+        email: "",
+        number: "",
+        category: ""
+      });
+    }
+  };
 
-		reader.readAsDataURL(file);
-};
-	const handleCategories = (category) => {
-		setCategories({...categories, category})
-}
- 	const {createProduct, isCreating } = useCreateProduct();
- 	const addProduct = async () => {
-		console.log(newProduct);
-		const data = createProduct({product: newProduct});
-	 	if(!data.error) {
-		setNewProduct({name: "", price: "", image: "", overview: "", email: "", number: ""});
-		}
- };
+  const cardBg = useColorModeValue("white", "gray.800");
 
   return (
-    <Container maxW={"container.sm"}>
-			<VStack spacing={8}>
-				<Heading as={"h1"} size={"2xl"} textAlign={"center"} mb={8}>
-					Create New Listing
-				</Heading>
+    <Container maxW="container.md" py={10}>
+      <VStack spacing={8} align="stretch">
+        <Heading textAlign="center" fontSize="3xl">
+          Create New Listing
+        </Heading>
 
-				<Box w={"full"} bg={useColorModeValue("white", "gray.800")} p={6} rounded={"lg"} shadow={"md"} mb={4}>
-					<VStack spacing={4}>
-						<Heading as={"h3"} size={'lg'} textAlign={"center"} mb={2}>Listing Info</Heading>
-						<Heading as={"h4"} size={'sm'} textAlign={"center"} mb={2}>Listing Name</Heading>
-						<Input
-							placeholder='Name'
-							name='name'
-							value={newProduct.name}
-							onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-						/>
-						<Heading as={"h4"} size={'sm'} textAlign={"center"} mb={2}>Price</Heading>
-						<Input
-							placeholder='Price'
-							name='price'
-							type='number'
-							value={newProduct.price}
-							onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-						/>
-						<Heading as={"h4"} size={'sm'} textAlign={"center"} mb={2}>Description</Heading>
-						<Textarea
-							placeholder="Description"
-							name = "overview"
-							value = {newProduct.overview}
-							onChange = {(e) => setNewProduct({...newProduct, overview: e.target.value})}
-							size='5xl'
-							rounded='md'
-						/>
-						{/*<Input
-							placeholder='Image URL'
-							name='image'
-							value={newProduct.image}
-							onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
-						/>*/}
-						<Heading as={"h4"} size={'md'} textAlign={"center"} mb={2}>Listing Images</Heading>
-						<Heading as={"h4"} size={'sm'} textAlign={"center"} mb={2}>Cover Image</Heading>
-						<input type='file' name = 'coverImage' accept='image/*' ref={coverImgRef} onChange={handleCoverImageSubmit} />
-						<Heading as={"h4"} size={'sm'} textAlign={"center"} mb={2}>Additional Images</Heading>
-						<input type='file' multiple={true} name='image' accept="image/*" ref={imgRef} onChange={handleImageSubmit}  />
-						<Heading as={'h4'} size={'md'} textAlign={'center'} mb={2}>Category</Heading>
-						{/*<Input 
-							name='categories'
-							value={newProduct.category}
-							placeholder = "Category"
-							onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
-						/>*/}
-						<RadioGroup
-  						colorScheme="orange"
-  						value={newProduct.category} // this should be an array now
-  						onChange={(selectedCategories) => setNewProduct({...newProduct, category: selectedCategories})}
-						>
-  						<SimpleGrid columns={3} spacing={5}>
-    					<Radio value="Appliances">Appliances</Radio>
-    					<Radio value="Arts and Crafts">Arts and Crafts</Radio>
-    					<Radio value="Auto">Auto</Radio>
-    					<Radio value="Beauty">Beauty</Radio>
-    					<Radio value="Clothing and Accessories">Clothing and Accessories</Radio>
-    					<Radio value="Shoes">Shoes</Radio>
-    					<Radio value="Electronics">Electronics</Radio>
-    					<Radio value="Computers">Computers</Radio>
-    					<Radio value="Furniture">Furniture</Radio>
-    					<Radio value="Farm/Garden">Farm/Garden</Radio>
-    					<Radio value="Video Games">Video Games</Radio>
-    					<Radio value="Tools">Tools</Radio>
-    					<Radio value="Sports">Sports</Radio>
-    					<Radio value="Other">Other</Radio>
-  					</SimpleGrid>
-					</RadioGroup>
+        <Box
+          bg={cardBg}
+          p={8}
+          rounded="xl"
+          shadow="lg"
+          spacing={6}
+        >
+          <VStack spacing={6} align="stretch">
+            <FormControl>
+              <FormLabel fontWeight="bold">Listing Name</FormLabel>
+              <Input
+                placeholder="Enter product name"
+                value={newProduct.name}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, name: e.target.value })
+                }
+              />
+            </FormControl>
 
-						<Heading as={'h3'} size={'md'} textAlign={'center'} mb={2}>Contact Info</Heading>
-						<Input
-							placeholder='Email'
-							name='email'
-							value={newProduct.email}
-							onChange={(e) => setNewProduct({ ...newProduct, email: e.target.value})}
-						/>
-						<Input
-							placeholder='Phone Number'
-							name='number'
-							value={newProduct.number}
-							onChange={(e) => setNewProduct({ ...newProduct, number: e.target.value})}
-						/>
+            <FormControl>
+              <FormLabel fontWeight="bold">Price</FormLabel>
+              <Input
+                placeholder="Enter price"
+                type="number"
+                value={newProduct.price}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, price: e.target.value })
+                }
+              />
+            </FormControl>
 
-						<Button bgGradient={"linear(to-r, orange.400, red.500)"} onClick={(e) => {e.preventDefault(); addProduct()}} w='full'>
-							{isCreating ? <LoadingSpinner /> : "Add Product" }
-						</Button>
-					</VStack>
-				</Box>
-			</VStack>
-		</Container>
+            <FormControl>
+              <FormLabel fontWeight="bold">Description</FormLabel>
+              <Textarea
+                placeholder="Write a short overview"
+                value={newProduct.overview}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, overview: e.target.value })
+                }
+              />
+            </FormControl>
+
+            <Divider />
+
+            <FormControl>
+              <FormLabel fontWeight="bold">Cover Image</FormLabel>
+              <Input
+                type="file"
+                accept="image/*"
+                ref={coverImgRef}
+                onChange={handleCoverImageSubmit}
+              />
+              {coverImg && (
+                <Image
+                  mt={3}
+                  src={coverImg}
+                  alt="Cover Preview"
+                  rounded="md"
+                  maxH="200px"
+                  objectFit="cover"
+                />
+              )}
+            </FormControl>
+
+            <FormControl>
+              <FormLabel fontWeight="bold">Additional Images</FormLabel>
+              <Input
+                type="file"
+                accept="image/*"
+                multiple
+                ref={imgRef}
+                onChange={handleImageSubmit}
+              />
+            </FormControl>
+
+            <Divider />
+
+            <FormControl>
+              <FormLabel fontWeight="bold">Category</FormLabel>
+              <RadioGroup
+                value={newProduct.category}
+                onChange={(val) =>
+                  setNewProduct({ ...newProduct, category: val })
+                }
+              >
+                <SimpleGrid columns={{ base: 2, md: 3 }} spacing={3}>
+                  {[
+                    "Appliances",
+                    "Arts and Crafts",
+                    "Auto",
+                    "Beauty",
+                    "Clothing and Accessories",
+                    "Shoes",
+                    "Electronics",
+                    "Computers",
+                    "Furniture",
+                    "Farm/Garden",
+                    "Video Games",
+                    "Tools",
+                    "Sports",
+                    "Other"
+                  ].map((cat) => (
+                    <Radio key={cat} value={cat} colorScheme="orange">
+                      {cat}
+                    </Radio>
+                  ))}
+                </SimpleGrid>
+              </RadioGroup>
+            </FormControl>
+
+            <Divider />
+
+            <FormControl>
+              <FormLabel fontWeight="bold">Contact Email</FormLabel>
+              <Input
+                placeholder="Your email"
+                value={newProduct.email}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, email: e.target.value })
+                }
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel fontWeight="bold">Phone Number</FormLabel>
+              <Input
+                placeholder="Your phone number"
+                value={newProduct.number}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, number: e.target.value })
+                }
+              />
+            </FormControl>
+
+            <Button
+              w="full"
+              colorScheme="orange"
+              size="lg"
+              onClick={(e) => {
+                e.preventDefault();
+                addProduct();
+              }}
+              isDisabled={isCreating}
+            >
+              {isCreating ? <LoadingSpinner /> : "Add Product"}
+            </Button>
+          </VStack>
+        </Box>
+      </VStack>
+    </Container>
   );
 };
 
-export default CreatePage
+export default CreatePage;

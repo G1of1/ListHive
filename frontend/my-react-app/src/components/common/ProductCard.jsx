@@ -168,7 +168,7 @@ import LoadingSpinner from '../skeleton/LoadingSpinner';
 						</HStack>
           </ModalBody>
           <ModalFooter>
-          <IconButton icon={<DeleteIcon />} onClick={(e) => { e.preventDefault(); handleDeleteProduct(product._id)}} colorScheme={"red"}></IconButton>
+          <IconButton icon={isDeleting ? <LoadingSpinner /> : <DeleteIcon />} onClick={(e) => { e.preventDefault(); handleDeleteProduct(product._id)}} colorScheme={"red"}></IconButton>
 						<Button variant='ghost' onClick={deleteOnClose}>Cancel</Button>
 					</ModalFooter>
         </ModalContent>
